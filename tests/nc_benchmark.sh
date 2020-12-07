@@ -63,7 +63,7 @@ done
 
 # prepare remote benchmark dirs
 $CURL $RDIR/$(basename $LLOG) -o "$LLOG" 2>/dev/null 
-cat "$LLOG" 2>/dev/null | grep -q DATE || echo '#DATE;BURL;USER;<UPLOAD|DOWNLOAD>;TEST;ERRORS;RESULTS' >  $LLOG
+cat "$LLOG" 2>/dev/null | grep -q DATE || echo '#DATE;URL;USER;<UPLOAD|DOWNLOAD>;TEST;ERRORS;RESULTS' >  $LLOG
 $CURL "$RDIR/files/0.txt"  >/dev/null 2>&1 && $CURL -X DELETE "$RDIR/files/" >/dev/null 2>&1
 $CURL -X MKCOL "$RDIR" >/dev/null 2>&1
 $CURL -X MKCOL "$RDIR/files" >/dev/null 2>&1
@@ -109,8 +109,9 @@ do
    fi
 done
 DL_FILES_TIME=$(( $(date '+%s') - $TIME_BEFORE))
+rm -fr "$LDIR/files"
 
-echo BURL=$BURL
+echo URL=$URL
 echo TEST_BLOCK_SIZE_MB=$TEST_BLOCK_SIZE_MB
 echo UL_BLOCK_SPEED=$UL_BLOCK_SPEED KByte/s
 echo DL_BLOCK_SPEED=$DL_BLOCK_SPEED KByte/s
@@ -121,10 +122,10 @@ echo UL_FILES_TIME=$UL_FILES_TIME sec
 echo DL_FILES_TIME=$DL_FILES_TIME sec
 
 D="$(date '+%Y.%m.%d %H:%M:%S')"
-echo "$D;$BURL;$USR;UPLOAD;Block $TEST_BLOCK_SIZE_MB MB;;$UL_BLOCK_SPEED KByte/s" >>  $LLOG
-echo "$D;$BURL;$USR;DOWNLOAD;Block $TEST_BLOCK_SIZE_MB MB;;$DL_BLOCK_SPEED KByte/s" >>  $LLOG
-echo "$D;$BURL;$USR;UPLOAD;$TEST_FILES_COUNT small Files;$UL_ERROR_CNT;$UL_FILES_TIME sec" >>  $LLOG
-echo "$D;$BURL;$USR;DOWNLOAD;$TEST_FILES_COUNT small Files;$DL_ERROR_CNT;$DL_FILES_TIME sec" >>  $LLOG
+echo "$D;$URL;$USR;UPLOAD;Block $TEST_BLOCK_SIZE_MB MB;;$UL_BLOCK_SPEED KByte/s" >>  $LLOG
+echo "$D;$URL;$USR;DOWNLOAD;Block $TEST_BLOCK_SIZE_MB MB;;$DL_BLOCK_SPEED KByte/s" >>  $LLOG
+echo "$D;$URL;$USR;UPLOAD;$TEST_FILES_COUNT small Files;$UL_ERROR_CNT;$UL_FILES_TIME sec" >>  $LLOG
+echo "$D;$URL;$USR;DOWNLOAD;$TEST_FILES_COUNT small Files;$DL_ERROR_CNT;$DL_FILES_TIME sec" >>  $LLOG
 echo uploading results: $LLOG to webdav
 $CURL  -T "$LLOG" "$RDIR/"
 echo done
